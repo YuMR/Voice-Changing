@@ -41,7 +41,7 @@
 options snd-usb-audio index=-2  註解掉並存檔
 之後重新開機就會調整成功
 	改完後如下：
-> # autoloader aliases
+> `#autoloader aliases
 > install sound-slot-0 /sbin/modprobe snd-card-0
 > install sound-slot-1 /sbin/modprobe snd-card-1
 > install sound-slot-2 /sbin/modprobe snd-card-2
@@ -63,25 +63,25 @@ options snd-usb-audio index=-2  註解掉並存檔
 > options cx88_alsa index=-2
 > options snd-atiixp-modem index=-2
 > options snd-intel8x0m index=-2
-> options snd-via82xx-modem index=-2
+> options snd-via82xx-modem index=-2`
 
 
 3.編寫聲音處理python文件
 vim sound.py
-> # -*- coding: utf-8 -*-					#編碼格式
+> `# -*- coding: utf-8 -*-					#編碼格式
 > import pyaudio
 > import sys
 > import numpy as np
 > import wave
 > import audioop
-> import struct
+> import struct`
 
-> chunk = 1024
+> `chunk = 1024
 > FORMAT = pyaudio.paInt16
 > CHANNELS = 1
-> RATE = 44100
+> RATE = 44100`
     
-> p = pyaudio.PyAudio()
+> `p = pyaudio.PyAudio()
 > stream = p.open(format = FORMAT,
 >                 channels = CHANNELS,
 >                 rate = RATE,
@@ -101,9 +101,9 @@ vim sound.py
 >                 print(count)
 >                 continue
 >             else:
->                 break
+>                 break`
 
->         data = stream.read(chunk)
+>        `data = stream.read(chunk)
 >         data = np.array(wave.struct.unpack("%dh"%(len(data)/swidth), data))/2 
 >         data = np.fft.rfft(data)					#進行傅立葉轉換
 >         new_fft = np.roll(data,num*2)				#shift以進行音調變換
@@ -116,19 +116,19 @@ vim sound.py
 >         data = np.fft.irfft(new_fft)					#反轉換
 >         dataout = np.array(data, dtype='int16')
 >         chunkout = struct.pack("%dh"%(len(dataout)), *list(dataout)) 
->         stream.write(chunkout)
+>         stream.write(chunkout)`
 
->         count=count+1
->         print(count)
+>        `count=count+1
+>         print(count)`
 
->     except:
+>    `except:
 >         pass
->         print("error")
+>         print("error")`
 
-> print ("* done")
+> `print ("* done")
 > stream.stop_stream()
 > stream.close()
-> p.terminate()
+> p.terminate()`
 
 ###工作分配表
 	楊佳儒－報告呈現、資料查詢
