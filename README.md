@@ -23,23 +23,25 @@
 	
 1.事前軟體安裝
 
-安裝python及其相關套件
-sudo apt-get install python
-sudo apt-get install python-pyaudio
-sudo apt-get install python-numpy
+安裝python及相套
+> sudo apt-get install python
+> sudo apt-get install python-pyaudio
+> sudo apt-get install python-numpy
 
 2.USB音效卡插入後調整USB音效卡設定
 音效卡插入後，輸入指令
-lsusb		#確認usb音效卡是否被偵測到了
+> lsusb		#確認usb音效卡是否被偵測到了
+
 在輸入指令aplay -l 檢視目前音效裝置
 一般card0為預設使用的音效卡，我們pi上所接的usb音效卡要將他變成預設的
-必須更改：alsa設定檔sudo vi /etc/modprobe.d/alsa-base.conf
+必須更改：alsa設定檔
+> sudo vi /etc/modprobe.d/alsa-base.conf
 
 將
 options snd-usb-audio index=-2  註解掉並存檔
 之後重新開機就會調整成功
 	改完後如下：
-	# autoloader aliases
+> # autoloader aliases
 install sound-slot-0 /sbin/modprobe snd-card-0
 install sound-slot-1 /sbin/modprobe snd-card-1
 install sound-slot-2 /sbin/modprobe snd-card-2
@@ -66,22 +68,22 @@ options snd-via82xx-modem index=-2
 
 3.編寫聲音處理python文件
 vim sound.py
-# -*- coding: utf-8 -*-					#編碼格式
-import pyaudio
-import sys
-import numpy as np
-import wave
-import audioop
-import struct
+> # -*- coding: utf-8 -*-					#編碼格式
+> import pyaudio
+> import sys
+> import numpy as np
+> import wave
+> import audioop
+> import struct
 
-chunk = 1024
-FORMAT = pyaudio.paInt16
-CHANNELS = 1
-RATE = 44100
+> chunk = 1024
+> FORMAT = pyaudio.paInt16
+> CHANNELS = 1
+> RATE = 44100
     
-p = pyaudio.PyAudio()
-stream = p.open(format = FORMAT,
-                channels = CHANNELS,
+> p = pyaudio.PyAudio()
+> stream = p.open(format = FORMAT,
+>                 channels = CHANNELS,
                 rate = RATE,
                 input = True,
                 output = True,
