@@ -49,8 +49,11 @@ options snd-usb-audio index=-2  註解掉並存檔
 之後重新開機就會調整成功
 
 
-3.編寫聲音處理python文件
+3.編寫聲音處理python 檔sound.py
 
+###操作教學（做出此產品之後該如何操作）
+
+	執行檔案 輸入python sound.py
 
 ###工作分配表
 	楊佳儒－報告呈現、資料查詢
