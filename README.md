@@ -11,9 +11,13 @@
 	2.程式碼-Stack overflow-Python Audio Frame Pitch Change
 ##實作過程（碰到哪些問題、如何解決）
 	遇到問題：
-1.SD卡容量不足：查找網路教學文件擴充
-2.IOError99813.硬體不足：聲音斷點
-聲音雜訊
+1.SD卡容量不足：查找網路教學文件擴充 
+
+2.IOError998
+
+3.硬體不足：聲音斷點 聲音雜訊
+
+
 ##運用哪些與課程內容中相關的技巧
 	Postfix－Raspberry Pi 開機自動寄信取得IP
 	ssh
