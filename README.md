@@ -42,28 +42,28 @@ options snd-usb-audio index=-2  註解掉並存檔
 之後重新開機就會調整成功
 	改完後如下：
 > # autoloader aliases
-install sound-slot-0 /sbin/modprobe snd-card-0
-install sound-slot-1 /sbin/modprobe snd-card-1
-install sound-slot-2 /sbin/modprobe snd-card-2
-install sound-slot-3 /sbin/modprobe snd-card-3
-install sound-slot-4 /sbin/modprobe snd-card-4
-install sound-slot-5 /sbin/modprobe snd-card-5
-install sound-slot-6 /sbin/modprobe snd-card-6
-install sound-slot-7 /sbin/modprobe snd-card-7
-# Cause optional modules to be loaded above generic modules
-install snd /sbin/modprobe --ignore-install snd && { /sbin/modprobe --quiet snd-ioctl32 ; /sbin/modprobe --quiet snd-seq ; : ; }
-install snd-rawmidi /sbin/modprobe --ignore-install snd-rawmidi && { /sbin/modprobe --quiet snd-seq-midi ; : ; }
-install snd-emu10k1 /sbin/modprobe --ignore-install snd-emu10k1 && { /sbin/modprobe --quiet snd-emu10k1-synth ; : ; }
-# Keep snd-pcsp from beeing loaded as first soundcard
-options snd-pcsp index=-2
-# Keep snd-usb-audio from beeing loaded as first soundcard
-options snd-usb-audio index=-1
-# Prevent abnormal drivers from grabbing index 0
-options bt87x index=-2
-options cx88_alsa index=-2
-options snd-atiixp-modem index=-2
-options snd-intel8x0m index=-2
-options snd-via82xx-modem index=-2
+> install sound-slot-0 /sbin/modprobe snd-card-0
+> install sound-slot-1 /sbin/modprobe snd-card-1
+> install sound-slot-2 /sbin/modprobe snd-card-2
+> install sound-slot-3 /sbin/modprobe snd-card-3
+> install sound-slot-4 /sbin/modprobe snd-card-4
+> install sound-slot-5 /sbin/modprobe snd-card-5
+> install sound-slot-6 /sbin/modprobe snd-card-6
+> install sound-slot-7 /sbin/modprobe snd-card-7
+> # Cause optional modules to be loaded above generic modules
+> install snd /sbin/modprobe --ignore-install snd && { /sbin/modprobe --quiet snd-ioctl32 ; /sbin/modprobe --quiet > snd-seq ; : ; }
+> install snd-rawmidi /sbin/modprobe --ignore-install snd-rawmidi && { /sbin/modprobe --quiet snd-seq-midi ; : ; }
+> install snd-emu10k1 /sbin/modprobe --ignore-install snd-emu10k1 && { /sbin/modprobe --quiet snd-emu10k1-synth ; > : ; }
+> # Keep snd-pcsp from beeing loaded as first soundcard
+> options snd-pcsp index=-2
+> # Keep snd-usb-audio from beeing loaded as first soundcard
+> options snd-usb-audio index=-1
+> # Prevent abnormal drivers from grabbing index 0
+> options bt87x index=-2
+> options cx88_alsa index=-2
+> options snd-atiixp-modem index=-2
+> options snd-intel8x0m index=-2
+> options snd-via82xx-modem index=-2
 
 
 3.編寫聲音處理python文件
@@ -84,58 +84,59 @@ vim sound.py
 > p = pyaudio.PyAudio()
 > stream = p.open(format = FORMAT,
 >                 channels = CHANNELS,
-                rate = RATE,
-                input = True,
-                output = True,
-                frames_per_buffer = chunk)
-swidth = 2
-count = 0
-num = int(input('What pitch '))				#輸入想要轉換的聲調
-print ("* recording")
-while True:
-    try:							#try-except 當遇到錯誤即跳過
-        if count == 1024:					#當執行1024次後會給一次停止判斷
-            x = input('Do you want to continue ? If yes, please enter 1 ')
-            if x == 1:
-                count = 0
-                print(count)
-                continue
-            else:
-                break
+>                 rate = RATE,
+>                 input = True,
+>                 output = True,
+>                 frames_per_buffer = chunk)
+> swidth = 2
+> count = 0
+> num = int(input('What pitch '))				#輸入想要轉換的聲調
+> print ("* recording")
+> while True:
+>     try:							#try-except 當遇到錯誤即跳過
+>         if count == 1024:					#當執行1024次後會給一次停止判斷
+>             x = input('Do you want to continue ? If yes, please enter 1 ')
+>             if x == 1:
+>                 count = 0
+>                 print(count)
+>                 continue
+>             else:
+>                 break
 
-        data = stream.read(chunk)
-        data = np.array(wave.struct.unpack("%dh"%(len(data)/swidth), data))/2 
-        data = np.fft.rfft(data)					#進行傅立葉轉換
-        new_fft = np.roll(data,num*2)				#shift以進行音調變換
-        if num>0:
-              for i in range(0, num*2):
-                    data[i] = 0
-          else:
-              for i in range(len(data)-num*2,len(data)-1):
-                data[i] = 0
-        data = np.fft.irfft(new_fft)					#反轉換
-        dataout = np.array(data, dtype='int16')
-        chunkout = struct.pack("%dh"%(len(dataout)), *list(dataout)) 
-        stream.write(chunkout)
+>         data = stream.read(chunk)
+>         data = np.array(wave.struct.unpack("%dh"%(len(data)/swidth), data))/2 
+>         data = np.fft.rfft(data)					#進行傅立葉轉換
+>         new_fft = np.roll(data,num*2)				#shift以進行音調變換
+>         if num>0:
+>               for i in range(0, num*2):
+>                     data[i] = 0
+>           else:
+>               for i in range(len(data)-num*2,len(data)-1):
+>                 data[i] = 0
+>         data = np.fft.irfft(new_fft)					#反轉換
+>         dataout = np.array(data, dtype='int16')
+>         chunkout = struct.pack("%dh"%(len(dataout)), *list(dataout)) 
+>         stream.write(chunkout)
 
-        count=count+1
-        print(count)
+>         count=count+1
+>         print(count)
 
-    except:
-        pass
-        print("error")
+>     except:
+>         pass
+>         print("error")
 
-print ("* done")
-stream.stop_stream()
-stream.close()
-p.terminate()
+> print ("* done")
+> stream.stop_stream()
+> stream.close()
+> p.terminate()
 
 ###工作分配表
 	楊佳儒－報告呈現、資料查詢
 	郭亞蓁－主程式修改（sound.py）
 余美儒－設備連接設定與測試
 教學文件及投影片為全組製作.
+
 ##參考來源
 	1.Stack overflow
 	2.https://people.csail.mit.edu/hubert/pyaudio/
-3.http://blog.itist.tw/2015/05/playing-audio-via-usb-sound-device-with-raspberry-pi.html
+	3.http://blog.itist.tw/2015/05/playing-audio-via-usb-sound-device-with-raspberry-pi.html
